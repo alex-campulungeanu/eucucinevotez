@@ -1,0 +1,10 @@
+[
+  { "value": "2", "count": 1, "assignable": true },
+  { "value": "1", "count": 1, "assignable": true },
+  { "value": "12", "count": 11, "assignable": true },
+  { "value": "9", "count": 11, "assignable": true },
+  { "value": "2", "count": 11, "assignable": true },
+  { "value": "5", "count": 7, "assignable": true },
+  { "value": "3", "count": 10, "assignable": true },
+  { "value": "7", "count": 11, "assignable": true }
+]

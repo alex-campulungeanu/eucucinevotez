@@ -36,7 +36,8 @@ pip install -r requirements.txt
 ## TODO:
 - [] sa fac colorat valoarea cu cele mai multe voturi
 - [] sa fac colorat inputul cu story number dupa ce am votat
-- [] de implementat un logger cu log pe fisier
+- [] sa oprest requestul la API dupa un numar de X(50) incercari
+- [x] de implementat un logger cu log pe fisier
 - [] de reformatat raspunsul si afisat mai bine in chenar
 - [x] check if story is  set when pressing start
 - [x] button for clear votes

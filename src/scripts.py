@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, List, Dict
 import requests
 
 from constants import BASE_URL
@@ -12,13 +12,10 @@ def create_cookie(session_id: str) -> dict:
     return cookies
 
 def refactor_response(resp: list):
-    # ref = [{"value": item.value, "count": item.count} for item in resp]
-    # return ref
-    return resp
+    reformatted = [{"value": item['value'], "count": item['count']} for item in resp]
+    return reformatted
 
-def fetch_votes(story_nr: str, session_id: str) -> Tuple[bool, list]:
-    formatted_url = f'{BASE_URL}/IAC-{story_nr}'
-    r = requests.get(formatted_url, cookies=create_cookie(session_id))
+def fetch_votes(story_nr: str, session_id: str) -> Tuple[bool, List[Dict]]:
     # return True, refactor_response([
     #                 { "value": "2", "count": 1, "assignable": 'true' },
     #                 { "value": "1", "count": 1, "assignable": 'true' },
@@ -29,6 +26,8 @@ def fetch_votes(story_nr: str, session_id: str) -> Tuple[bool, list]:
     #                 { "value": "3", "count": 10, "assignable": 'true' },
     #                 { "value": "7", "count": 11, "assignable": 'true' },
     #             ])
+    formatted_url = f'{BASE_URL}/IAC-{story_nr}'
+    r = requests.get(formatted_url, cookies=create_cookie(session_id))
     if r.status_code == 200:
         res = r.json()
         bounded = res['boundedVotes']

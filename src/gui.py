@@ -7,6 +7,7 @@ from datetime import datetime
 from scripts import fetch_votes, set_vote
 from logger_service import logger
 from constants import JIRA_SESSION_ID
+from components.VoteList import VoteList
 
 load_dotenv() 
 
@@ -41,8 +42,11 @@ def main(page: ft.Page):
                     page.show_snack_bar(
                         ft.SnackBar(ft.Text("Error when calling API !"), open=True, bgcolor='red')
                     )
-                vote_list.controls.insert(0, ft.Text(f"IAC-{story_nr_input.value} # {current_time} #  {votes}"))
-                logger.info(f'votes  {votes}')
+                vl = VoteList(vote_list=votes, story=story_nr_input.value)
+                logger.info(vl.color())
+                # vote_list.controls.insert(0, ft.Text(f"IAC-{story_nr_input.value} # {current_time} #  {votes}", color='red'))
+                vote_list.controls.insert(0, vl.color())
+                logger.info(f'votes {votes}')
                 page.update()
                 time.sleep(2)
                 fill_vote_list()
@@ -53,11 +57,8 @@ def main(page: ft.Page):
                 logger.error(f'Not all input values where given for fetching votes for {story_nr_input.value}')
                 milking_jira = False
                 votes = []  
-        else:
-            pass
     
     def give_vote(e):
-        # TODO: check if story_nr_input is set, otherwise thow error
         if story_nr_input.value != '' and vote_input.value != '' and session_cookie_input.value != '':
             res = set_vote(story_nr_input.value, vote_input.value, session_cookie_input.value)
             if res:

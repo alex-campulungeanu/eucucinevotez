@@ -1,16 +1,21 @@
 from datetime import datetime
 import flet as ft
-from typing import List, Dict
+from typing import List
+
+from typed_dict import VoteStructure
 
 class VoteList(ft.UserControl):
-    def __init__(self, vote_list: List[Dict[str, str]], story):
+    def __init__(self, vote_list: List[VoteStructure], story):
         self.vote_list = vote_list
         self.story = story
     
-    def get_highest(self):
-        highest_vote = {}
+    def get_highest(self) -> VoteStructure:
+        highest_vote: VoteStructure = {
+            'count': 0,
+            'value': 0
+        }
         for vote in self.vote_list:
-            if highest_vote == {}:
+            if highest_vote is None:
                 highest_vote = vote
             else:
                 if highest_vote['count'] < vote['count']:
@@ -25,9 +30,9 @@ class VoteList(ft.UserControl):
         colored_row = ft.Row(expand=True, spacing=5)
         for vote in self.vote_list:
             if vote['value'] == biggest['value']:
-                colored_row.controls.append(ft.Text(vote, color='red'))
+                colored_row.controls.append(ft.Text(str(vote), color='red'))
             else:
-                colored_row.controls.append(ft.Text(vote))
+                colored_row.controls.append(ft.Text(str(vote)))
         res = ft.Row(
             [
                 ft.Text(f"IAC-{self.story} # {current_time} #"),

@@ -1,5 +1,6 @@
 
 <h1 align="center">
+![Voting](voting.jpg)
 <br>
   "eu cu cine votez ?"
 </h1>
@@ -34,14 +35,18 @@ pip install -r requirements.txt
 - flet run src/gui.py -d
 
 ## TODO:
-- [] sa fac colorat valoarea cu cele mai multe voturi
+- [] sa afisez ultimele story-uri votate, de verificat daca exista un storage in flet sau sa folosesc un sqlite
+- [] de gasit care este dimensiunea desktopului si sa pun pagina in coltul din dreapta sus pe baza dimensiunii
+- [] implementat pylint si ceva teste
 - [] sa fac colorat inputul cu story number dupa ce am votat
 - [] sa oprest requestul la API dupa un numar de X(50) incercari
+- [x] sa autopopulez inputul cu votul be baza celor mai multe voturi
 - [x] de implementat un logger cu log pe fisier
-- [] de reformatat raspunsul si afisat mai bine in chenar
+- [x] de reformatat raspunsul si afisat mai bine in chenar
 - [x] check if story is  set when pressing start
 - [x] button for clear votes
 - [x] alerta inainte de START sa verific daca este completat cookie si story number
+- [x] sa fac colorat valoarea cu cele mai multe voturi
 - [] add  session cookie from the GUI
 - [] add issue parameter in the main.py call
 

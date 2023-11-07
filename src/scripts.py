@@ -3,6 +3,7 @@ import requests
 
 from constants import BASE_URL
 from logger_service import logger
+from typed_dict import VoteStructure
 
 # TODO: check if i can get session id flobaly from somewhere
 def create_cookie(session_id: str) -> dict:
@@ -11,20 +12,21 @@ def create_cookie(session_id: str) -> dict:
     }
     return cookies
 
-def refactor_response(resp: list):
+def refactor_response(resp: list) -> List[VoteStructure]:
     reformatted = [{"value": item['value'], "count": item['count']} for item in resp]
     return reformatted
 
-def fetch_votes(story_nr: str, session_id: str) -> Tuple[bool, List[Dict]]:
+def fetch_votes(story_nr: str, session_id: str) -> Tuple[bool, List[VoteStructure]]:
+    # from utils import generate_random
     # return True, refactor_response([
-    #                 { "value": "2", "count": 1, "assignable": 'true' },
-    #                 { "value": "1", "count": 1, "assignable": 'true' },
-    #                 { "value": "12", "count": 11, "assignable": 'true' },
-    #                 { "value": "9", "count": 11, "assignable": 'true' },
-    #                 { "value": "2", "count": 11, "assignable": 'true' },
-    #                 { "value": "5", "count": 7, "assignable": 'true' },
-    #                 { "value": "3", "count": 10, "assignable": 'true' },
-    #                 { "value": "7", "count": 11, "assignable": 'true' },
+    #                 { "value": 2, "count": generate_random(1, 100), "assignable": 'true' },
+    #                 { "value": 1, "count": generate_random(1, 100), "assignable": 'true' },
+    #                 { "value": 12, "count": generate_random(1, 100), "assignable": 'true' },
+    #                 { "value": 9, "count": generate_random(1, 100), "assignable": 'true' },
+    #                 { "value": 11, "count": 11, "assignable": 'true' },
+    #                 { "value": 5, "count": 7, "assignable": 'true' },
+    #                 { "value": 3, "count": 10, "assignable": 'true' },
+    #                 { "value": 7, "count": 11, "assignable": 'true' },
     #             ])
     formatted_url = f'{BASE_URL}/IAC-{story_nr}'
     r = requests.get(formatted_url, cookies=create_cookie(session_id))

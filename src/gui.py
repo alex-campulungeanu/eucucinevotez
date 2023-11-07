@@ -32,7 +32,7 @@ def main(page: ft.Page):
         page.update()
     
     def fill_vote_list():
-        current_time = datetime.now().strftime("%H:%M:%S")
+        # current_time = datetime.now().strftime("%H:%M:%S")
         global milking_jira
         if milking_jira:
             if story_nr_input.value != '' and session_cookie_input.value != '':
@@ -44,6 +44,8 @@ def main(page: ft.Page):
                     )
                 vl = VoteList(vote_list=votes, story=story_nr_input.value)
                 logger.info(vl.color())
+                biggest_vote = vl.get_highest()
+                vote_input.value = str(biggest_vote['value'])
                 # vote_list.controls.insert(0, ft.Text(f"IAC-{story_nr_input.value} # {current_time} #  {votes}", color='red'))
                 vote_list.controls.insert(0, vl.color())
                 logger.info(f'votes {votes}')

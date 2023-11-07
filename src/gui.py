@@ -6,10 +6,13 @@ from datetime import datetime
 
 from scripts import fetch_votes, set_vote
 from logger_service import logger
-from constants import JIRA_SESSION_ID
+from constants import JIRA_SESSION_ID, MAX_RETRYS_REQUEST
 from components.VoteList import VoteList
 
 load_dotenv() 
+
+milking_jira = False
+retrys_jira = 0
 
 def main(page: ft.Page):
     # TODO: see if i create a module for this
@@ -19,7 +22,6 @@ def main(page: ft.Page):
     page.window_left = 1767
     page.window_top = 0
     
-    milking_jira = False 
     session_cookie_input = ft.TextField(hint_text="JIRA session cookie", width=400)
     session_cookie_input.value = JIRA_SESSION_ID
     story_nr_input = ft.TextField(hint_text="Story number", width=200)
@@ -34,9 +36,17 @@ def main(page: ft.Page):
     def fill_vote_list():
         # current_time = datetime.now().strftime("%H:%M:%S")
         global milking_jira
+        global retrys_jira
         if milking_jira:
             if story_nr_input.value != '' and session_cookie_input.value != '':
                 status, votes = fetch_votes(story_nr_input.value, session_cookie_input.value)
+                retrys_jira = retrys_jira + 1
+                if retrys_jira == MAX_RETRYS_REQUEST:
+                    milking_jira = False
+                    page.show_snack_bar(
+                        ft.SnackBar(ft.Text(f"Stoping the api calls after {MAX_RETRYS_REQUEST} retrys for {story_nr_input.value}!"), open=True, bgcolor='red')
+                    )
+                    logger.error(f"Stoping the api calls after {MAX_RETRYS_REQUEST} retrys for {story_nr_input.value}!")
                 if not status:
                     logger.error(f'Vote fetching failed for {story_nr_input.value} !')
                     page.show_snack_bar(
@@ -110,7 +120,7 @@ def main(page: ft.Page):
             story_nr_input,
             ft.ElevatedButton("START", on_click=start_milk_jira, color='green'),
             ft.ElevatedButton("STOP", on_click=stop_milk_jira, color='red'),
-            ft.ElevatedButton("CLEAR", on_click=clear_vote_list, color='red'),
+            ft.ElevatedButton("CLEAR", on_click=clear_vote_list),
             # ft.ElevatedButton("print position", on_click=lambda x: print(page.window_left,  page.window_top)),
         ])
     )
@@ -124,7 +134,7 @@ def main(page: ft.Page):
     
     vote_container = ft.Container(
         content=vote_list, 
-        height=300, 
+        height=330, 
         bgcolor=ft.colors.LIGHT_BLUE_100,
         border=ft.border.all(2, ft.colors.LIGHT_BLUE_500),
         border_radius=10)

@@ -4,9 +4,9 @@ import time
 from dotenv import load_dotenv
 from datetime import datetime
 
-from scripts import fetch_votes, set_vote
+from jira_scripts import fetch_votes, set_vote
 from logger_service import logger
-from constants import JIRA_SESSION_ID, MAX_RETRYS_REQUEST
+from constants import JIRA_SESSION_ID, MAX_RETRYS_REQUEST, LAST_VOTE_KEY_STORAGE
 from components.VoteList import VoteList
 
 load_dotenv() 
@@ -18,7 +18,7 @@ def main(page: ft.Page):
     # TODO: see if i create a module for this
     page.title = "Eu cu cine votez ?"
     page.window_width = 800
-    page.window_height = 600
+    page.window_height = 800
     page.window_left = 1767
     page.window_top = 0
     
@@ -27,6 +27,7 @@ def main(page: ft.Page):
     story_nr_input = ft.TextField(hint_text="Story number", width=200)
     vote_input = ft.TextField(hint_text="SP", width=100)
     vote_list = ft.ListView(expand=True, spacing=10, padding=10)
+    last_vote = ft.Text(page.client_storage.get(LAST_VOTE_KEY_STORAGE), color="green")
     
     def refresh_cookie(e):
         logger.info(JIRA_SESSION_ID)
@@ -56,7 +57,6 @@ def main(page: ft.Page):
                 logger.info(vl.color())
                 biggest_vote = vl.get_highest()
                 vote_input.value = str(biggest_vote['value'])
-                # vote_list.controls.insert(0, ft.Text(f"IAC-{story_nr_input.value} # {current_time} #  {votes}", color='red'))
                 vote_list.controls.insert(0, vl.color())
                 logger.info(f'votes {votes}')
                 page.update()
@@ -74,10 +74,12 @@ def main(page: ft.Page):
         if story_nr_input.value != '' and vote_input.value != '' and session_cookie_input.value != '':
             res = set_vote(story_nr_input.value, vote_input.value, session_cookie_input.value)
             if res:
-                # story_nr_input.value = ''
-                # story_nr_input.update()
                 vote_input.value = ''
                 vote_input.update()
+                page.client_storage.set(LAST_VOTE_KEY_STORAGE, story_nr_input.value)
+                last_vote_stored = page.client_storage.get(LAST_VOTE_KEY_STORAGE)
+                last_vote.value = last_vote_stored
+                last_vote.update()
                 page.show_snack_bar(
                     ft.SnackBar(ft.Text(f"Vote for {story_nr_input.value} success"), open=True, bgcolor='green')
                 )
@@ -107,7 +109,12 @@ def main(page: ft.Page):
         vote_list.clean()
         page.show_snack_bar(ft.SnackBar(ft.Text(f"Vote list cleared !"), open=True, bgcolor='lightgreen'))
         logger.info('Vote list cleared')
-
+    
+    def clear_last_vote(e):
+        page.client_storage.remove(LAST_VOTE_KEY_STORAGE)
+        last_vote.value='-'
+        last_vote.update()
+        
     page.add(
         ft.Row([
             session_cookie_input,
@@ -129,8 +136,15 @@ def main(page: ft.Page):
         ft.Row([
             vote_input,
             ft.ElevatedButton("VOTE", on_click=give_vote, color='green'),
+            ft.ElevatedButton("CLEAR vote list", on_click=clear_last_vote),
         ])
     )
+    
+    page.add(
+        ft.Row([
+            ft.Text("Last vote: "),
+            last_vote
+        ]))
     
     vote_container = ft.Container(
         content=vote_list, 

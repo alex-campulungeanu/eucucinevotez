@@ -34,6 +34,9 @@ pip install -r requirements.txt
 - fill .env.local based on .env.example
 - flet run src/gui.py -d
 
+## Stuff
+- user storage: C:\Users\<USER>\AppData\Roaming\Appveyor Systems Inc\Flet\
+
 ## TODO:
 - [] sa afisez ultimele story-uri votate, de verificat daca exista un storage in flet sau sa folosesc un sqlite
 - [] de gasit care este dimensiunea desktopului si sa pun pagina in coltul din dreapta sus pe baza dimensiunii

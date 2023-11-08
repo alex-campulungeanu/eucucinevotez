@@ -50,7 +50,7 @@ def main(page: ft.Page):
                 if not status:
                     logger.error(f'Vote fetching failed for {story_nr_input.value} !')
                     page.show_snack_bar(
-                        ft.SnackBar(ft.Text("Error when calling API !"), open=True, bgcolor='red')
+                        ft.SnackBar(ft.Text("Error when calling fetch votes API !"), open=True, bgcolor='red')
                     )
                 vl = VoteList(vote_list=votes, story=story_nr_input.value)
                 logger.info(vl.color())
@@ -101,7 +101,7 @@ def main(page: ft.Page):
     def stop_milk_jira(e):
         global milking_jira
         milking_jira = False
-        fill_vote_list()
+        # fill_vote_list() # don't need this call
 
     def clear_vote_list(e):
         vote_list.clean()

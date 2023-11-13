@@ -38,11 +38,14 @@ pip install -r requirements.txt
 - user storage: C:\Users\<USER>\AppData\Roaming\Appveyor Systems Inc\Flet\
 
 ## TODO:
-- [] sa afisez ultimele story-uri votate, de verificat daca exista un storage in flet sau sa folosesc un sqlite
+- [] de pus un sunet cand voteaza un x nr de developeri
+- [] adaugat un confirmation modal cand apas pe reset vote list
+- [] de gasit o modalitate sa afisez ce story-uri sunt disponibile pentru vot
 - [] de gasit care este dimensiunea desktopului si sa pun pagina in coltul din dreapta sus pe baza dimensiunii
 - [] implementat pylint si ceva teste
 - [] sa fac colorat inputul cu story number dupa ce am votat
-- [] sa oprest requestul la API dupa un numar de X(50) incercari
+- [x] sa afisez ultimele story-uri votate, de verificat daca exista un storage in flet sau sa folosesc un sqlite
+- [x] sa oprest requestul la API dupa un numar de X(50) incercari
 - [x] sa autopopulez inputul cu votul be baza celor mai multe voturi
 - [x] de implementat un logger cu log pe fisier
 - [x] de reformatat raspunsul si afisat mai bine in chenar
@@ -50,8 +53,8 @@ pip install -r requirements.txt
 - [x] button for clear votes
 - [x] alerta inainte de START sa verific daca este completat cookie si story number
 - [x] sa fac colorat valoarea cu cele mai multe voturi
-- [] add  session cookie from the GUI
-- [] add issue parameter in the main.py call
+- [x] add  session cookie from the GUI
+- [x] add issue parameter in the main.py call
 
 ```
 [

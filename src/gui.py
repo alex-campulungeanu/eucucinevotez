@@ -109,12 +109,35 @@ def main(page: ft.Page):
         vote_list.clean()
         page.show_snack_bar(ft.SnackBar(ft.Text(f"Vote list cleared !"), open=True, bgcolor='lightgreen'))
         logger.info('Vote list cleared')
-    
+
+    def close_dlg_clear_last_vote(e):
+        clear_last_vote_dlg_modal.open = False
+        page.update()
+ 
     def clear_last_vote(e):
         page.client_storage.remove(LAST_VOTE_KEY_STORAGE)
         last_vote.value='-'
         last_vote.update()
+        clear_last_vote_dlg_modal.open = False
+        page.update()
+    
+    def open_dlg_clear_last_vote(e):
+        page.dialog = clear_last_vote_dlg_modal
+        clear_last_vote_dlg_modal.open = True
+        page.update()
         
+    clear_last_vote_dlg_modal = ft.AlertDialog(
+        modal=True,
+        title=ft.Text("Please confirm"),
+        content=ft.Text("Do you really want to clear last vote?"),
+        actions=[
+            ft.TextButton("No", on_click=close_dlg_clear_last_vote),
+            ft.TextButton("Yes", on_click=clear_last_vote),
+        ],
+        actions_alignment=ft.MainAxisAlignment.END,
+        on_dismiss=lambda e: print("Modal dialog dismissed!"),
+    )
+    
     page.add(
         ft.Row([
             session_cookie_input,
@@ -136,7 +159,7 @@ def main(page: ft.Page):
         ft.Row([
             vote_input,
             ft.ElevatedButton("VOTE", on_click=give_vote, color='green'),
-            ft.ElevatedButton("CLEAR vote list", on_click=clear_last_vote),
+            ft.ElevatedButton("CLEAR last vote", on_click=open_dlg_clear_last_vote),
         ])
     )
     

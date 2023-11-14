@@ -6,7 +6,7 @@ from datetime import datetime
 
 from jira_scripts import fetch_votes, set_vote
 from logger_service import logger
-from constants import JIRA_SESSION_ID, MAX_RETRYS_REQUEST, LAST_VOTE_KEY_STORAGE
+from constants import JIRA_SESSION_ID, MAX_RETRYS_REQUEST, LAST_VOTE_KEY_STORAGE, WAIT_SECONDS
 from components.VoteList import VoteList
 
 load_dotenv() 
@@ -54,13 +54,12 @@ def main(page: ft.Page):
                         ft.SnackBar(ft.Text("Error when calling fetch votes API !"), open=True, bgcolor='red')
                     )
                 vl = VoteList(vote_list=votes, story=story_nr_input.value)
-                logger.info(vl.color())
                 biggest_vote = vl.get_highest()
                 vote_input.value = str(biggest_vote['value'])
                 vote_list.controls.insert(0, vl.color())
                 logger.info(f'votes {votes}')
                 page.update()
-                time.sleep(2)
+                time.sleep(WAIT_SECONDS)
                 fill_vote_list()
             else:
                 page.show_snack_bar(

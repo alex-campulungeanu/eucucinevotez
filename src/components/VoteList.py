@@ -24,7 +24,13 @@ class VoteList(ft.UserControl):
                     highest_vote = vote
         return highest_vote
     
-    def color(self):
+    def get_nr_of_votes(self) -> int:
+        count = 0
+        for vote in self.vote_list:
+            count += vote['count']
+        return count
+    
+    def get_colored_output(self):
         current_time = datetime.now().strftime("%H:%M:%S")
         biggest = self.get_highest()
         colored_row = ft.Row(expand=True, spacing=5)

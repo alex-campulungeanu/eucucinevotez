@@ -1,12 +1,13 @@
+from win32api import GetSystemMetrics
 import flet as ft
-import os
 import time
 from dotenv import load_dotenv
-from datetime import datetime
+import winsound
+from playsound import playsound
 
 from jira_scripts import fetch_votes, set_vote
 from logger_service import logger
-from constants import JIRA_SESSION_ID, MAX_RETRYS_REQUEST, LAST_VOTE_KEY_STORAGE, WAIT_SECONDS
+from constants import JIRA_SESSION_ID, MAX_RETRYS_REQUEST, LAST_VOTE_KEY_STORAGE, WAIT_SECONDS, NR_OF_DEVELOPERS, ROOT_DIR
 from components.VoteList import VoteList
 
 load_dotenv() 
@@ -16,10 +17,12 @@ retrys_jira = 0
 
 def main(page: ft.Page):
     # TODO: see if i create a module for this
+    screen_0 = GetSystemMetrics(0)
+    # screen_1 = GetSystemMetrics(1)
     page.title = "Eu cu cine votez ?"
-    page.window_width = 800
+    page.window_width = 900
     page.window_height = 800
-    page.window_left = 1767
+    page.window_left = screen_0 - page.window_width
     page.window_top = 0
     
     session_cookie_input = ft.TextField(hint_text="JIRA session cookie", width=400)
@@ -35,7 +38,6 @@ def main(page: ft.Page):
         page.update()
     
     def fill_vote_list():
-        # current_time = datetime.now().strftime("%H:%M:%S")
         global milking_jira
         global retrys_jira
         if milking_jira:
@@ -55,9 +57,19 @@ def main(page: ft.Page):
                     )
                 vl = VoteList(vote_list=votes, story=story_nr_input.value)
                 biggest_vote = vl.get_highest()
-                vote_input.value = str(biggest_vote['value'])
-                vote_list.controls.insert(0, vl.color())
-                logger.info(f'votes {votes}')
+                current_nr_of_votes = vl.get_nr_of_votes()
+                logger.info(f"{current_nr_of_votes=}")
+                if current_nr_of_votes >= NR_OF_DEVELOPERS:
+                    # try to play the sound only once
+                    if vote_input.value == '':
+                        try:
+                            playsound(f'{ROOT_DIR}/assets/slm.mp3')
+                        except:
+                            pass
+                    vote_input.value = str(biggest_vote['value'])
+                    logger.info(f"Filling the vote input with: {biggest_vote['value']} / already voted: {current_nr_of_votes} from nr of developers present: {NR_OF_DEVELOPERS}")
+                vote_list.controls.insert(0, vl.get_colored_output())
+                logger.info(f'votes \n {votes}')
                 page.update()
                 time.sleep(WAIT_SECONDS)
                 fill_vote_list()

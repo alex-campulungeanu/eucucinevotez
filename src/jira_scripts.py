@@ -19,14 +19,14 @@ def refactor_response(resp: list) -> List[VoteStructure]:
 def fetch_votes(story_nr: str, session_id: str) -> Tuple[bool, List[VoteStructure]]:
     # from utils import generate_random
     # return True, refactor_response([
-    #                 { "value": 2, "count": generate_random(1, 100), "assignable": 'true' },
-    #                 { "value": 1, "count": generate_random(1, 100), "assignable": 'true' },
-    #                 { "value": 12, "count": generate_random(1, 100), "assignable": 'true' },
-    #                 { "value": 9, "count": generate_random(1, 100), "assignable": 'true' },
-    #                 { "value": 11, "count": 11, "assignable": 'true' },
-    #                 { "value": 5, "count": 7, "assignable": 'true' },
-    #                 { "value": 3, "count": 10, "assignable": 'true' },
-    #                 { "value": 7, "count": 11, "assignable": 'true' },
+    #                 { "value": 2, "count": generate_random(1, 3), "assignable": 'true' },
+    #                 { "value": 1, "count": generate_random(1, 3), "assignable": 'true' },
+    #                 { "value": 12, "count": generate_random(1, 3), "assignable": 'true' },
+    #                 { "value": 9, "count": generate_random(1, 3), "assignable": 'true' },
+    #                 { "value": 11, "count": generate_random(1, 3), "assignable": 'true' },
+    #                 # { "value": 5, "count": generate_random(1, 3), "assignable": 'true' },
+    #                 # { "value": 3, "count": generate_random(1, 3), "assignable": 'true' },
+    #                 # { "value": 7, "count": generate_random(1, 3), "assignable": 'true' },
     #             ])
     formatted_url = f'{BASE_URL}/IAC-{story_nr}'
     r = requests.get(formatted_url, cookies=create_cookie(session_id))

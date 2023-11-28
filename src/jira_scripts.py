@@ -5,16 +5,17 @@ from constants import BASE_URL
 from logger_service import logger
 from typed_dict import VoteStructure
 
+
 # TODO: check if i can get session id flobaly from somewhere
 def create_cookie(session_id: str) -> dict:
-    cookies = {
-        'JSESSIONID': session_id,
-    }
+    cookies = {'JSESSIONID': session_id}
     return cookies
+
 
 def refactor_response(resp: list) -> List[VoteStructure]:
     reformatted = [{"value": item['value'], "count": item['count']} for item in resp]
     return reformatted
+
 
 def fetch_votes(story_nr: str, session_id: str) -> Tuple[bool, List[VoteStructure]]:
     # from utils import generate_random
@@ -39,7 +40,8 @@ def fetch_votes(story_nr: str, session_id: str) -> Tuple[bool, List[VoteStructur
     else:
         logger.error(f"Status code when fetching votes {r.status_code}")
         return False, []
-    
+
+
 def set_vote(story_nr: str, sp: str, session_id: str) -> bool:
     url = f'{BASE_URL}/IAC-{story_nr}/card/{sp}'
     logger.info(f'Voting for: {story_nr} with SP: {sp}')
@@ -48,4 +50,3 @@ def set_vote(story_nr: str, sp: str, session_id: str) -> bool:
         return True
     else:
         return False
-        

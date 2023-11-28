@@ -21,27 +21,14 @@ class Toast:
         TODO: Implement different types. `Success`, `Info`, `Danger`
     """
 
-    def __init__(
-        self,
-        page: Page,
-        icon,
-        msg_title,
-        msg_desc,
-        trigger,
-        bgcolor: str = None,
-        auto_close: int = 5,
-    ):
+    def __init__(self, page: Page, icon, msg_title, msg_desc, trigger, bgcolor: str = None, auto_close: int = 5):
         self.page = page
         self.icon = icon
         self.msg_title = msg_title
         self.msg_desc = msg_desc
         self.trigger = trigger
-        assert hasattr(
-            self.trigger, "on_click"
-        ), "Control must contain `on_click` attribute"
-        self.trigger.on_click = lambda x: threading.Thread(
-            target=self._update_visibility, daemon=True
-        ).start()
+        assert hasattr(self.trigger, "on_click"), "Control must contain `on_click` attribute"
+        self.trigger.on_click = lambda x: threading.Thread(target=self._update_visibility, daemon=True).start()
 
         self.bgcolor = bgcolor
         self.auto_close = auto_close
@@ -81,9 +68,7 @@ class Toast:
                         Text(f"{self.timer} seconds ago"),
                         IconButton(
                             icons.CLOSE_OUTLINED,
-                            on_click=lambda x: threading.Thread(
-                                target=self._close, daemon=True
-                            ).start(),
+                            on_click=lambda x: threading.Thread(target=self._close, daemon=True).start(),
                         ),
                     ]
                 ),

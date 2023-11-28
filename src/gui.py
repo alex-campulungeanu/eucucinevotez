@@ -7,13 +7,21 @@ from playsound import playsound
 
 from jira_scripts import fetch_votes, set_vote
 from logger_service import logger
-from constants import JIRA_SESSION_ID, MAX_RETRYS_REQUEST, LAST_VOTE_KEY_STORAGE, WAIT_SECONDS, NR_OF_DEVELOPERS, ROOT_DIR
+from constants import (
+    JIRA_SESSION_ID,
+    MAX_RETRYS_REQUEST,
+    LAST_VOTE_KEY_STORAGE,
+    WAIT_SECONDS,
+    NR_OF_DEVELOPERS,
+    ROOT_DIR,
+)
 from components.VoteList import VoteList
 
-load_dotenv() 
+load_dotenv()
 
 milking_jira = False
 retrys_jira = 0
+
 
 def main(page: ft.Page):
     # TODO: see if i create a module for this
@@ -24,19 +32,19 @@ def main(page: ft.Page):
     page.window_height = 800
     page.window_left = screen_0 - page.window_width
     page.window_top = 0
-    
+
     session_cookie_input = ft.TextField(hint_text="JIRA session cookie", width=400)
     session_cookie_input.value = JIRA_SESSION_ID
     story_nr_input = ft.TextField(hint_text="Story number", width=200)
     vote_input = ft.TextField(hint_text="SP", width=100)
     vote_list = ft.ListView(expand=True, spacing=10, padding=10)
     last_vote = ft.Text(page.client_storage.get(LAST_VOTE_KEY_STORAGE), color="green")
-    
+
     def refresh_cookie(e):
         logger.info(JIRA_SESSION_ID)
         session_cookie_input.value = JIRA_SESSION_ID
         page.update()
-    
+
     def fill_vote_list():
         global milking_jira
         global retrys_jira
@@ -47,7 +55,13 @@ def main(page: ft.Page):
                 if retrys_jira == MAX_RETRYS_REQUEST:
                     milking_jira = False
                     page.show_snack_bar(
-                        ft.SnackBar(ft.Text(f"Stoping the api calls after {MAX_RETRYS_REQUEST} retrys for {story_nr_input.value}!"), open=True, bgcolor='red')
+                        ft.SnackBar(
+                            ft.Text(
+                                f"Stoping the api calls after {MAX_RETRYS_REQUEST} retrys for {story_nr_input.value}!"
+                            ),
+                            open=True,
+                            bgcolor='red',
+                        )
                     )
                     logger.error(f"Stoping the api calls after {MAX_RETRYS_REQUEST} retrys for {story_nr_input.value}!")
                 if not status:
@@ -67,20 +81,20 @@ def main(page: ft.Page):
                         except:
                             pass
                     vote_input.value = str(biggest_vote['value'])
-                    logger.info(f"Filling the vote input with: {biggest_vote['value']} / already voted: {current_nr_of_votes} from nr of developers present: {NR_OF_DEVELOPERS}")
+                    logger.info(
+                        f"Filling the vote input with: {biggest_vote['value']} / already voted: {current_nr_of_votes} from nr of developers present: {NR_OF_DEVELOPERS}"
+                    )
                 vote_list.controls.insert(0, vl.get_colored_output())
                 logger.info(f'votes \n {votes}')
                 page.update()
                 time.sleep(WAIT_SECONDS)
                 fill_vote_list()
             else:
-                page.show_snack_bar(
-                    ft.SnackBar(ft.Text("Fill the story number first !"), open=True, bgcolor='red')
-                )
+                page.show_snack_bar(ft.SnackBar(ft.Text("Fill the story number first !"), open=True, bgcolor='red'))
                 logger.error(f'Not all input values where given for fetching votes for {story_nr_input.value}')
                 milking_jira = False
-                votes = []  
-    
+                votes = []
+
     def give_vote(e):
         if story_nr_input.value != '' and vote_input.value != '' and session_cookie_input.value != '':
             res = set_vote(story_nr_input.value, vote_input.value, session_cookie_input.value)
@@ -102,15 +116,17 @@ def main(page: ft.Page):
                 logger.error(f"Vote failed for {story_nr_input.value} when calling API !")
         else:
             page.show_snack_bar(
-                    ft.SnackBar(ft.Text(f"Story number or SP not filled for {story_nr_input.value} !"), open=True, bgcolor='red')
+                ft.SnackBar(
+                    ft.Text(f"Story number or SP not filled for {story_nr_input.value} !"), open=True, bgcolor='red'
                 )
+            )
             logger.info(f"Story number or SP not filled for {story_nr_input.value} !")
-    
+
     def start_milk_jira(e):
         global milking_jira
         milking_jira = True
         fill_vote_list()
-        
+
     def stop_milk_jira(e):
         global milking_jira
         milking_jira = False
@@ -124,19 +140,19 @@ def main(page: ft.Page):
     def close_dlg_clear_last_vote(e):
         clear_last_vote_dlg_modal.open = False
         page.update()
- 
+
     def clear_last_vote(e):
         page.client_storage.remove(LAST_VOTE_KEY_STORAGE)
-        last_vote.value='-'
+        last_vote.value = '-'
         last_vote.update()
         clear_last_vote_dlg_modal.open = False
         page.update()
-    
+
     def open_dlg_clear_last_vote(e):
         page.dialog = clear_last_vote_dlg_modal
         clear_last_vote_dlg_modal.open = True
         page.update()
-        
+
     clear_last_vote_dlg_modal = ft.AlertDialog(
         modal=True,
         title=ft.Text("Please confirm"),
@@ -148,44 +164,41 @@ def main(page: ft.Page):
         actions_alignment=ft.MainAxisAlignment.END,
         on_dismiss=lambda e: print("Modal dialog dismissed!"),
     )
-    
+
+    page.add(ft.Row([session_cookie_input, ft.ElevatedButton("Refresh", on_click=refresh_cookie)]))
+
     page.add(
-        ft.Row([
-            session_cookie_input,
-            ft.ElevatedButton("Refresh", on_click=refresh_cookie),
-        ])
+        ft.Row(
+            [
+                story_nr_input,
+                ft.ElevatedButton("START", on_click=start_milk_jira, color='green'),
+                ft.ElevatedButton("STOP", on_click=stop_milk_jira, color='red'),
+                ft.ElevatedButton("CLEAR", on_click=clear_vote_list),
+                # ft.ElevatedButton("print position", on_click=lambda x: print(page.window_left,  page.window_top)),
+            ]
+        )
     )
-    
+
     page.add(
-        ft.Row([
-            story_nr_input,
-            ft.ElevatedButton("START", on_click=start_milk_jira, color='green'),
-            ft.ElevatedButton("STOP", on_click=stop_milk_jira, color='red'),
-            ft.ElevatedButton("CLEAR", on_click=clear_vote_list),
-            # ft.ElevatedButton("print position", on_click=lambda x: print(page.window_left,  page.window_top)),
-        ])
+        ft.Row(
+            [
+                vote_input,
+                ft.ElevatedButton("VOTE", on_click=give_vote, color='green'),
+                ft.ElevatedButton("CLEAR last vote", on_click=open_dlg_clear_last_vote),
+            ]
+        )
     )
-    
-    page.add(
-        ft.Row([
-            vote_input,
-            ft.ElevatedButton("VOTE", on_click=give_vote, color='green'),
-            ft.ElevatedButton("CLEAR last vote", on_click=open_dlg_clear_last_vote),
-        ])
-    )
-    
-    page.add(
-        ft.Row([
-            ft.Text("Last vote: "),
-            last_vote
-        ]))
-    
+
+    page.add(ft.Row([ft.Text("Last vote: "), last_vote]))
+
     vote_container = ft.Container(
-        content=vote_list, 
-        height=330, 
+        content=vote_list,
+        height=330,
         bgcolor=ft.colors.LIGHT_BLUE_100,
         border=ft.border.all(2, ft.colors.LIGHT_BLUE_500),
-        border_radius=10)
+        border_radius=10,
+    )
     page.add(vote_container)
-    
+
+
 ft.app(target=main)

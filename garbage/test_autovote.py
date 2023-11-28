@@ -2,14 +2,14 @@
 
 # TODO: daca sunt mai multe obiecte cu acelasi count ?
 votes_obj_arr = [
-    { "value": "2", "count": 1, "assignable": 'true' },
-    { "value": "1", "count": 1, "assignable": 'true' },
-    { "value": "12", "count": 11, "assignable": 'true' },
-    { "value": "9", "count": 11, "assignable": 'true' },
-    { "value": "2", "count": 11, "assignable": 'true' },
-    { "value": "5", "count": 7, "assignable": 'true' },
-    { "value": "3", "count": 10, "assignable": 'true' },
-    { "value": "7", "count": 11, "assignable": 'true' },
+    {"value": "2", "count": 1, "assignable": 'true'},
+    {"value": "1", "count": 1, "assignable": 'true'},
+    {"value": "12", "count": 11, "assignable": 'true'},
+    {"value": "9", "count": 11, "assignable": 'true'},
+    {"value": "2", "count": 11, "assignable": 'true'},
+    {"value": "5", "count": 7, "assignable": 'true'},
+    {"value": "3", "count": 10, "assignable": 'true'},
+    {"value": "7", "count": 11, "assignable": 'true'},
 ]
 
 highest_vote = None
@@ -29,4 +29,3 @@ if highest_vote is None:
 else:
     print(highest_vote)
     print(highest_vote['value'])
-    

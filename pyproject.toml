@@ -1,0 +1,6 @@
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+packages = ["autogpt"]
+extend-exclude = '(/dist|/.venv|/venv|/build|/migrations/logs)/'
+skip-string-normalization = 1

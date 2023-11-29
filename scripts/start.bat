@@ -1,0 +1,1 @@
+flet run src\gui.py -r

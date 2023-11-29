@@ -2,7 +2,6 @@ from win32api import GetSystemMetrics
 import flet as ft
 import time
 from dotenv import load_dotenv
-import winsound
 from playsound import playsound
 
 from jira_scripts import fetch_votes, set_vote
@@ -70,7 +69,7 @@ def main(page: ft.Page):
                         ft.SnackBar(ft.Text("Error when calling fetch votes API !"), open=True, bgcolor='red')
                     )
                 vl = VoteList(vote_list=votes, story=story_nr_input.value)
-                biggest_vote = vl.get_highest()
+                biggest_vote = vl.get_most_votes()
                 current_nr_of_votes = vl.get_nr_of_votes()
                 logger.info(f"{current_nr_of_votes=}")
                 if current_nr_of_votes >= NR_OF_DEVELOPERS:
@@ -167,6 +166,10 @@ def main(page: ft.Page):
 
     page.add(ft.Row([session_cookie_input, ft.ElevatedButton("Refresh", on_click=refresh_cookie)]))
 
+    def clear_vote_input(e):
+        vote_input.value = ''
+        vote_input.update()
+
     page.add(
         ft.Row(
             [
@@ -184,7 +187,8 @@ def main(page: ft.Page):
             [
                 vote_input,
                 ft.ElevatedButton("VOTE", on_click=give_vote, color='green'),
-                ft.ElevatedButton("CLEAR last vote", on_click=open_dlg_clear_last_vote),
+                ft.ElevatedButton("CLEAR vote input", on_click=clear_vote_input),
+                ft.ElevatedButton("CLEAR last vote saved", on_click=open_dlg_clear_last_vote, color='red'),
             ]
         )
     )

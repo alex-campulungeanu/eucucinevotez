@@ -5,12 +5,12 @@ from typing import List
 from typed_dict import VoteStructure
 
 
-class VoteList(ft.UserControl):
+class VoteList:
     def __init__(self, vote_list: List[VoteStructure], story):
         self.vote_list = vote_list
         self.story = story
 
-    def get_highest(self) -> VoteStructure:
+    def get_most_votes(self) -> VoteStructure:
         highest_vote: VoteStructure = {'count': 0, 'value': 0}
         for vote in self.vote_list:
             if highest_vote is None:
@@ -30,7 +30,7 @@ class VoteList(ft.UserControl):
 
     def get_colored_output(self):
         current_time = datetime.now().strftime("%H:%M:%S")
-        biggest = self.get_highest()
+        biggest = self.get_most_votes()
         colored_row = ft.Row(expand=True, spacing=5)
         for vote in self.vote_list:
             if vote['value'] == biggest['value']:

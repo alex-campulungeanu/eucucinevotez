@@ -1,4 +1,4 @@
-from typing import Tuple, List, Dict
+from typing import Tuple, List
 import requests
 
 from constants import BASE_URL

@@ -25,7 +25,7 @@ Technologies used:
 
 ## Run
 - make sur .env file has proper JSESSIONID filled
-```scripts\start.bat```
+- ```scripts\start.bat```
 
 ## 🚀 Instalation
 ```sh
@@ -42,11 +42,12 @@ pip install -r requirements.txt
 
 ## TODO:
 - [] de pus un sunet cand voteaza un x nr de developeri
-- [] adaugat un confirmation modal cand apas pe reset vote list
 - [] de gasit o modalitate sa afisez ce story-uri sunt disponibile pentru vot
-- [] de gasit care este dimensiunea desktopului si sa pun pagina in coltul din dreapta sus pe baza dimensiunii
-- [] implementat pylint si ceva teste
 - [] sa fac colorat inputul cu story number dupa ce am votat
+- [] de adaugat in modal care sa imi arate ce toate configuratiile (nr of developers, wait sleep etc.) # nu cred ca e chiar util, ma mai gandesc
+- [x] adaugat un confirmation modal cand apas pe reset vote list
+- [x] de gasit care este dimensiunea desktopului si sa pun pagina in coltul din dreapta sus pe baza dimensiunii
+- [x] implementat pylint si ceva teste
 - [x] sa afisez ultimele story-uri votate, de verificat daca exista un storage in flet sau sa folosesc un sqlite
 - [x] sa oprest requestul la API dupa un numar de X(50) incercari
 - [x] sa autopopulez inputul cu votul be baza celor mai multe voturi

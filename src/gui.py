@@ -15,11 +15,11 @@ from constants import (
     WAIT_SECONDS,
     NR_OF_DEVELOPERS,
     ROOT_DIR,
+    NR_OF_DEVELOPERS_OFFSET,
 )
 from components.VoteList import VoteList
 
 dotenv_file = dotenv.find_dotenv()
-print(dotenv_file)
 load_dotenv(dotenv_file)
 
 milking_jira = False
@@ -46,10 +46,19 @@ def main(page: ft.Page):
     def refresh_cookie(e):
         logger.info(JIRA_SESSION_ID)
         cookie_input = session_cookie_input.value or ""
-        os.environ['JSESSIONID'] = cookie_input
-        dotenv.set_key(dotenv_path=dotenv_file, key_to_set="JSESSIONID", value_to_set=cookie_input, quote_mode="never")
-        session_cookie_input.value = JIRA_SESSION_ID
-        page.update()
+        if cookie_input == "":
+            page.show_snack_bar(
+                ft.SnackBar(
+                    ft.Text(f"You need to fille something in the input before refresh!"), open=True, bgcolor='red'
+                )
+            )
+        else:
+            os.environ['JSESSIONID'] = cookie_input
+            dotenv.set_key(
+                dotenv_path=dotenv_file, key_to_set="JSESSIONID", value_to_set=cookie_input, quote_mode="never"
+            )
+            session_cookie_input.value = cookie_input
+            page.update()
 
     def fill_vote_list():
         global milking_jira
@@ -79,13 +88,13 @@ def main(page: ft.Page):
                 biggest_vote = vl.get_most_votes()
                 current_nr_of_votes = vl.get_nr_of_votes()
                 logger.info(f"{current_nr_of_votes=}")
-                if current_nr_of_votes >= int(NR_OF_DEVELOPERS):
+                if current_nr_of_votes >= int(NR_OF_DEVELOPERS) - NR_OF_DEVELOPERS_OFFSET:
                     # try to play the sound only once
-                    if vote_input.value == '':
+                    """ if vote_input.value == '':
                         try:
                             playsound(f'{ROOT_DIR}/assets/slm.mp3')
                         except:
-                            pass
+                            pass """
                     vote_input.value = str(biggest_vote['value'])
                     logger.info(
                         f"Filling the vote input with: {biggest_vote['value']} / already voted: {current_nr_of_votes} from nr of developers present: {NR_OF_DEVELOPERS}"

@@ -1,6 +1,8 @@
 from win32api import GetSystemMetrics
 import flet as ft
 import time
+import os
+import dotenv
 from dotenv import load_dotenv
 from playsound import playsound
 
@@ -16,7 +18,9 @@ from constants import (
 )
 from components.VoteList import VoteList
 
-load_dotenv()
+dotenv_file = dotenv.find_dotenv()
+print(dotenv_file)
+load_dotenv(dotenv_file)
 
 milking_jira = False
 retrys_jira = 0
@@ -41,6 +45,9 @@ def main(page: ft.Page):
 
     def refresh_cookie(e):
         logger.info(JIRA_SESSION_ID)
+        cookie_input = session_cookie_input.value or ""
+        os.environ['JSESSIONID'] = cookie_input
+        dotenv.set_key(dotenv_path=dotenv_file, key_to_set="JSESSIONID", value_to_set=cookie_input, quote_mode="never")
         session_cookie_input.value = JIRA_SESSION_ID
         page.update()
 
@@ -72,7 +79,7 @@ def main(page: ft.Page):
                 biggest_vote = vl.get_most_votes()
                 current_nr_of_votes = vl.get_nr_of_votes()
                 logger.info(f"{current_nr_of_votes=}")
-                if current_nr_of_votes >= NR_OF_DEVELOPERS:
+                if current_nr_of_votes >= int(NR_OF_DEVELOPERS):
                     # try to play the sound only once
                     if vote_input.value == '':
                         try:

@@ -23,6 +23,9 @@ Technologies used:
 - **Flet** # https://flet.dev/
 - **Python**
 
+## Run
+- make sur .env file has proper JSESSIONID filled
+```scripts\start.bat```
 
 ## 🚀 Instalation
 ```sh

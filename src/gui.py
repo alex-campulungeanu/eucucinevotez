@@ -43,7 +43,11 @@ def main(page: ft.Page):
     vote_list = ft.ListView(expand=True, spacing=10, padding=10)
     last_vote = ft.Text(page.client_storage.get(LAST_VOTE_KEY_STORAGE), color="green")
 
-    def refresh_cookie(e):
+    announce_audio = ft.Audio(
+        src="/laugh.mp3", autoplay=False, volume=1,
+    )
+    
+    def refresh_session_cookie(e):
         logger.info(JIRA_SESSION_ID)
         cookie_input = session_cookie_input.value or ""
         if cookie_input == "":
@@ -89,6 +93,7 @@ def main(page: ft.Page):
                 current_nr_of_votes = vl.get_nr_of_votes()
                 logger.info(f"{current_nr_of_votes=}")
                 if current_nr_of_votes >= int(NR_OF_DEVELOPERS) - NR_OF_DEVELOPERS_OFFSET:
+                    announce_audio.play()
                     # try to play the sound only once
                     """ if vote_input.value == '':
                         try:
@@ -114,12 +119,16 @@ def main(page: ft.Page):
         if story_nr_input.value != '' and vote_input.value != '' and session_cookie_input.value != '':
             res = set_vote(story_nr_input.value, vote_input.value, session_cookie_input.value)
             if res:
-                vote_input.value = ''
                 vote_input.update()
-                page.client_storage.set(LAST_VOTE_KEY_STORAGE, story_nr_input.value)
-                last_vote_stored = page.client_storage.get(LAST_VOTE_KEY_STORAGE)
-                last_vote.value = last_vote_stored
+                storage = {
+                    "story_nr": story_nr_input.value,
+                    "sp": vote_input.value
+                }
+                # page.client_storage.set(LAST_VOTE_KEY_STORAGE, story_nr_input.value)
+                page.client_storage.set(LAST_VOTE_KEY_STORAGE, storage)
+                last_vote.value = page.client_storage.get(LAST_VOTE_KEY_STORAGE)
                 last_vote.update()
+                vote_input.value = ''
                 page.show_snack_bar(
                     ft.SnackBar(ft.Text(f"Vote for {story_nr_input.value} success"), open=True, bgcolor='green')
                 )
@@ -180,12 +189,14 @@ def main(page: ft.Page):
         on_dismiss=lambda e: print("Modal dialog dismissed!"),
     )
 
-    page.add(ft.Row([session_cookie_input, ft.ElevatedButton("Refresh", on_click=refresh_cookie)]))
-
     def clear_vote_input(e):
         vote_input.value = ''
         vote_input.update()
-
+        
+    page.overlay.append(announce_audio)
+    
+    page.add(ft.Row([session_cookie_input, ft.ElevatedButton("Refresh", on_click=refresh_session_cookie)]))
+    
     page.add(
         ft.Row(
             [
@@ -213,12 +224,11 @@ def main(page: ft.Page):
 
     vote_container = ft.Container(
         content=vote_list,
-        height=330,
+        height=130,
         bgcolor=ft.colors.LIGHT_BLUE_100,
         border=ft.border.all(2, ft.colors.LIGHT_BLUE_500),
         border_radius=10,
     )
     page.add(vote_container)
-
-
-ft.app(target=main)
+    
+ft.app(target=main, assets_dir="assets") #tried to move the assets dir in the root project, for some reason is not working, fuck it , leave it like thism the future generations should search for a solution

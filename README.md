@@ -25,6 +25,7 @@ Technologies used:
 
 ## Run
 - make sur .env file has proper JSESSIONID filled
+- ```venv\Scripts\activate.bat```
 - ```scripts\start.bat```
 
 ## 🚀 Instalation

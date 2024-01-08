@@ -4,7 +4,6 @@ import time
 import os
 import dotenv
 from dotenv import load_dotenv
-from playsound import playsound
 
 from jira_scripts import fetch_votes, set_vote
 from logger_service import logger
@@ -14,12 +13,11 @@ from constants import (
     LAST_VOTE_KEY_STORAGE,
     WAIT_SECONDS,
     NR_OF_DEVELOPERS,
-    ROOT_DIR,
     NR_OF_DEVELOPERS_OFFSET,
 )
 from components.VoteList import VoteList
 
-dotenv_file = dotenv.find_dotenv()
+dotenv_file: str = dotenv.find_dotenv()
 load_dotenv(dotenv_file)
 
 milking_jira = False
@@ -28,11 +26,11 @@ retrys_jira = 0
 
 def main(page: ft.Page):
     # TODO: see if i create a module for this
-    screen_0 = GetSystemMetrics(0)
-    # screen_1 = GetSystemMetrics(1)
+    screen_0: int = GetSystemMetrics(0) #width
+    screen_1: int = GetSystemMetrics(1) #height
     page.title = "Eu cu cine votez ?"
     page.window_width = 900
-    page.window_height = 800
+    page.window_height = screen_1
     page.window_left = screen_0 - page.window_width
     page.window_top = 0
 
@@ -224,7 +222,7 @@ def main(page: ft.Page):
 
     vote_container = ft.Container(
         content=vote_list,
-        height=130,
+        height=430,
         bgcolor=ft.colors.LIGHT_BLUE_100,
         border=ft.border.all(2, ft.colors.LIGHT_BLUE_500),
         border_radius=10,

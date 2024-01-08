@@ -7,7 +7,7 @@ from typed_dict import VoteStructure
 
 class VoteList:
     def __init__(self, vote_list: List[VoteStructure], story):
-        self.vote_list = vote_list
+        self.vote_list: List[VoteStructure] = vote_list
         self.story = story
 
     def get_most_votes(self) -> VoteStructure:

@@ -13,8 +13,8 @@ def create_cookie(session_id: str) -> dict:
 
 
 def refactor_response(resp: list) -> List[VoteStructure]:
-    # we are skipping the coffe breaks and question marks
-    reformatted = [{"value": item['value'], "count": item['count']} for item in resp if isinstance(item['value'], int)]
+    # TODO: we should skip the coffe breaks and question marks
+    reformatted: List[VoteStructure] = [{"value": item['value'], "count": item['count']} for item in resp if item['value'].isdigit()]
     return reformatted
 
 

@@ -42,6 +42,7 @@ pip install -r requirements.txt
 - user storage: C:\Users\<USER>\AppData\Roaming\Appveyor Systems Inc\Flet\
 
 ## TODO:
+- [] de pus un item care sa seteze nr de developeri similar cu inputul pentru session cookie
 - [] de pus un sunet cand voteaza un x nr de developeri
 - [] de gasit o modalitate sa afisez ce story-uri sunt disponibile pentru vot
 - [] sa fac colorat inputul cu story number dupa ce am votat

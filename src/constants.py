@@ -5,7 +5,7 @@ load_dotenv()
 
 ROOT_DIR = os.path.abspath(os.curdir)
 
-MAX_RETRYS_REQUEST = 150
+MAX_RETRYS_REQUEST = 800 
 JIRA_SESSION_ID = os.getenv('JSESSIONID')
 BASE_URL = os.getenv('BASE_URL')
 
